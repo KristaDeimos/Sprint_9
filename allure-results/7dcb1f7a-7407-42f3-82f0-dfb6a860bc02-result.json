@@ -1,0 +1,1 @@
+{"name": "test_authorization_with_wrong_credentials", "status": "passed", "description": "Тест авторизации с неверными учетными данными", "start": 1769849488615, "stop": 1769849492911, "uuid": "47e0c74b-ce01-4169-86b7-6149d289bfa6", "testCaseId": "03af75ec4040caa637c3797bfaa24fee", "fullName": "tests.test_authorization#test_authorization_with_wrong_credentials"}
