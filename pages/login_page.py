@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from .base_page import BasePage
 
 
-class AuthPage(BasePage):
+class LoginPage(BasePage):
     
     # Локаторы
     EMAIL_INPUT = (By.NAME, "email")
