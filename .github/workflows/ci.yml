@@ -1,44 +1,18 @@
-name: ci
 
+name: Selenoid Tests Workflow
 on:
   push:
-  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-  tests:
+  run-selenoid-tests:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Build images
-        run: docker compose build
-
-      - name: Start Selenoid
-        run: docker compose up -d selenoid selenoid-ui
-
-      - name: Run tests
-        run: docker compose run --rm tests
-
-      - name: Generate Allure HTML report
-        if: always()
-        run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/work" \
-            -w /work \
-            ghcr.io/allure-framework/allure2:2.27.0 \
-            allure generate allure-results -o allure-report --clean
-
-      - name: Upload allure-results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: allure-results
-
-      - name: Upload allure-report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: allure-report
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Pull selenoid image
+        run: docker pull selenoid/chrome:128.0
+      - name: Run tests in docker
+        run: docker compose up --build --exit-code-from test_docker
