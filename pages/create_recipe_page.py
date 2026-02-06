@@ -1,6 +1,6 @@
 import allure
 from data.test_data import URLs
-from .base_page import BasePage
+from pages.base_page import BasePage
 from locators.create_recipe_locators import CreateRecipeLocators
 
 
@@ -65,3 +65,4 @@ class CreateRecipePage(BasePage):
     def wait_and_select_first_option(self):
         self.wait_for_ingredient_dropdown()
         return self.select_first_dropdown_option()
+
