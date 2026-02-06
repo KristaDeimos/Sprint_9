@@ -1,40 +1,24 @@
-import pytest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import allure
+from pages.create_recipe_page import CreateRecipePage
+from data.test_data import TestData
+from data.test_data import URLs
 
-def test_create_recipe(driver):
 
-    driver.get("https://foodgram-frontend-1.prakticum-team.ru/signin")
-    driver.find_element(By.NAME, "username").send_keys("testuser")
-    driver.find_element(By.NAME, "password").send_keys("securepassword123")
-    driver.find_element(By.ID, "submit-btn").click()
+@allure.feature("Создание рецепта")
+class TestCreateRecipe:
+    @allure.title("Тест создания рецепта с ингредиентами")
+    def test_create_recipe_with_ingredients(self, driver, logged_in_user):
+        create_recipe_page = CreateRecipePage(driver)
 
-    create_tab = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "create-recipe-tab"))
-    )
-    create_tab.click()
+        create_recipe_page.go_to_create_recipe()
+        create_recipe_page.fill_basic_info(
+            TestData.RECIPE_NAME,
+            TestData.COOKING_TIME,
+            TestData.DESCRIPTION
+        )
+        create_recipe_page.add_ingredients(TestData.INGREDIENTS)
+        create_recipe_page.upload_image(TestData.IMAGE_PATH)
+        create_recipe_page.create_recipe()
 
-    recipe_name = "Тестовый рецепт"
-    driver.find_element(By.NAME, "title").send_keys(recipe_name)
-    driver.find_element(By.NAME, "description").send_keys("Описание тестового рецепта")
-    driver.find_element(By.NAME, "steps").send_keys("Шаг 1: сделать то-то")
-
-    ingredient_input = driver.find_element(By.NAME, "ingredient")
-    ingredient_input.send_keys("Молоко")
-
-    ingredient_option = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, ".ingredient-option"))
-    )
-    ingredient_option.click()
-
-    driver.find_element(By.ID, "create-btn").click()
-
-    recipe_card = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, ".recipe-card"))
-    )
-    assert recipe_card.is_displayed(), "Карточка рецепта не отображается"
-
-    card_title = recipe_card.find_element(By.CSS_SELECTOR, ".recipe-title").text
-    assert card_title == recipe_name, f"Название рецепта не совпадает: {card_title}"
+        assert URLs.RECIPES_URL in create_recipe_page.get_current_url()
+        assert create_recipe_page.test_recipe_title_displayed() == TestData.RECIPE_NAME
