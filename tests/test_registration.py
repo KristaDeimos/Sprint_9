@@ -1,29 +1,26 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import time
+import allure
+from pages.registration_page import RegistrationPage
+from data.test_data import URLs
+from utils.test_user import generate_test_user
 
 
-def test_create_account(driver):
-    """Тест создания аккаунта"""
-    
-    driver.get("https://foodgram-frontend-1.prakticum-team.ru/signup")
+@allure.feature("Регистрация пользователя")
+class TestRegistration:
+    @allure.title("Тест создания аккаунта")
+    def test_create_account(self, driver, generated_test_user):
+        registration_page = RegistrationPage(driver)
 
-    create_button = driver.find_element(By.ID, "create-account-btn")
-    create_button.click()
+        registration_page.go_to(URLs.SIGNUP_URL)
+        registration_page.is_registration_form_displayed()
 
-    driver.find_element(By.NAME, "username").send_keys("testuser")
-    driver.find_element(By.NAME, "email").send_keys("testuser@example.com")
-    driver.find_element(By.NAME, "password").send_keys("securepassword123")
+        registration_page.register(
+            generated_test_user['first_name'],
+            generated_test_user['last_name'],
+            generated_test_user['username'],
+            generated_test_user['email'],
+            generated_test_user['password']
+        )
 
-    submit_button = driver.find_element(By.ID, "submit-btn")
-    submit_button.click()
-
-    time.sleep(2)
-
-    assert "login" in driver.current_url.lower(), "Не произошло перехода на страницу авторизации"
-
-    login_form = driver.find_element(By.ID, "login-form")
-    assert login_form.is_displayed(), "Форма авторизации не отображается"
-
-    print("Тест пройден успешно!")
+        current_url = registration_page.get_current_url()
+        assert current_url == URLs.SIGNUP_URL, f"Неверный URL после регистрации: {current_url}"
+        assert registration_page.is_login_form_displayed()
