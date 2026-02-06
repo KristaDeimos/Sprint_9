@@ -7,6 +7,7 @@ class LoginPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.locators = LoginLocators()
+        self.driver = driver
 
     def fill_email(self, email):
         self.send_keys(self.locators.EMAIL_INPUT, email, "Ввод email")
