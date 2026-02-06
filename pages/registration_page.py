@@ -1,5 +1,5 @@
 import allure
-from .base_page import BasePage
+from pages.base_page import BasePage
 from locators.registration_locators import RegistrationLocators
 
 
@@ -42,3 +42,4 @@ class RegistrationPage(BasePage):
             self.fill_email(email)
             self.fill_password(password)
             self.click_create_account_button()
+
