@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pages.registration_page import RegistrationPage
-from login_page import LoginPage
+from .pages.login_page import LoginPage
 from utils.test_user import generate_test_user
 from data.test_data import URLs, Timeouts
 
